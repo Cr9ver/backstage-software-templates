@@ -60,9 +60,15 @@ jobs:
         shell: bash
         run: |
 
+          argocd login agrocd-argocd-server.argocd \
+          --insecure \
+          --grpc-web \
+          --username admin \
+          --password ${{ '${{ secrets.ARGOCD_PASSWORD }}' }}
+
           # Connects the argocd repo
           repo="https://github.com/cr9verorg/${{values.app_name}}.git "
-          argocd repo list | grep -q $repo || argocd repo add $repo 
+          argocd repo list | grep -q $repo || argocd repo add $repo
 
           # Creates the argocd app
           argocd app get ${{values.app_name}} || argocd app create ${{values.app_name}} \
@@ -78,12 +84,6 @@ jobs:
       - name: Argocd app sync
         shell: bash
         run: |
-          argocd login agrocd-argocd-server.argocd \
-          --insecure \
-          --grpc-web \
-          --username admin \
-          --password ${{ '${{ secrets.ARGOCD_PASSWORD }}' }}
-
           argocd app sync ${{values.app_name}}
           argocd app wait ${{values.app_name}} --health --timeout 180
 
