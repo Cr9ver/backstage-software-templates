@@ -59,7 +59,7 @@ jobs:
       - name: Argocd app sync
         shell: bash
         run: |
-          argocd login argocd-argocd-server.argocd \
+          argocd login argocd.test.com \
           --insecure \
           --username admin \
           --password ${{ '${{ secrets.ARGOCD_PASSWORD }}' }}
